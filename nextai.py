@@ -21,6 +21,7 @@ def read_file_tail(file_path, n_lines=10):
 
 
 def call_openai_api(chat_history):
+    print(chat_history)
     url = "https://api.openai.com/v1/chat/completions"
     headers = {
         "Content-Type": "application/json",
@@ -28,11 +29,12 @@ def call_openai_api(chat_history):
     }
     data = {"model": "gpt-3.5-turbo", "messages": chat_history}
     response = requests.post(url, json=data, headers=headers)
+    print(response.content)
 
     if response.status_code == 200:
         return response.json()["choices"][0]["message"]["content"]
     else:
-        return f"Error: {response.status_code}"
+        return f"OpenAI Error: {response.status_code}"
 
 
 def call_humanloop_api(chat_history):
@@ -47,7 +49,7 @@ def call_humanloop_api(chat_history):
         "model_config": {
             "provider": "openai",
             "endpoint": "chat",
-            "chat_template": [{"role": "system", "message": system_message}],
+            "chat_template": [{"role": "system", "content": system_message}],
             "max_tokens": -1,
         },
     }
@@ -56,7 +58,7 @@ def call_humanloop_api(chat_history):
     if response.status_code == 200:
         return response.json()["messages"][-1]["message"]
     else:
-        return f"Error: {response.status_code}"
+        return f"Humanloop Error: {response.status_code}"
 
 
 system_message = """
