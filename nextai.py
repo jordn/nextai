@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
-HUMANLOOP_API_KEY = os.environ["HUMANLOOP_API_KEY"]
+# HUMANLOOP_API_KEY = os.environ["HUMANLOOP_API_KEY"]
 
 
 def print_colored(text, color="green"):
@@ -40,7 +40,7 @@ def call_humanloop_api(chat_history):
     headers = {
         "accept": "application/json",
         "content-type": "application/json",
-        "X-API-KEY": HUMANLOOP_API_KEY,
+        # "X-API-KEY": HUMANLOOP_API_KEY,
     }
     payload = {
         "messages": chat_history,
@@ -69,7 +69,13 @@ You are a helpful assistant that is extremely proficient at writing code, especi
     - use env vars for secrets like OPENAI_API_KEY
 """
 
+# Set up
 chat_history = [{"role": "system", "message": system_message}]
+print_colored("Starting the dev server", "blue")
+
+# Kick off the dev server piping stdout and stderr to files
+os.system("npm run dev > stdout.log 2> stderr.log &")
+
 print_colored(
     "Welcome to the chatbot! Type your message below or type 'exit' to quit.", "yellow"
 )
@@ -89,7 +95,7 @@ while True:
     )
     chat_history.append({"role": "user", "content": user_message})
 
-    ai_response = call_humanloop_api(chat_history)
+    ai_response = call_openai_api(chat_history)
     chat_history.append({"role": "assistant", "content": ai_response})
 
     print_colored(ai_response, "green")
