@@ -46,3 +46,19 @@ def write_to_file(path:str, contents:str) -> str:
     with open(clean_path, "w") as file:
         file.write(contents)
     return "Success"
+
+# TODO: handle stdout, stderr. Does this work automatically?
+def execute_bash_command(command:str) -> str:
+    """
+    Executes a bash command.
+    Allowed commands: npm, node, mkdir
+    """
+    whitelist = ["npm","node","mkdir"]
+    command_components = command.split(" ")
+    start_command = command_components[0]
+    if start_command not in whitelist:
+        return f"Error: Command {start_command} not allowed."
+    result = subprocess.run(command_components, capture_output=True)
+    return result.stdout.decode("utf-8")
+
+print(execute_bash_command("npm -h"))
