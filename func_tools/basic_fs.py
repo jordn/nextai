@@ -14,7 +14,7 @@ def ls(path:str) -> str:
     files = os.listdir(clean_path)
     return "\n".join(files)
 
-print(ls("././old_code"))
+# print(ls("././old_code"))
 
 def cat(path:str) -> str:
     """
@@ -25,7 +25,7 @@ def cat(path:str) -> str:
         contents = file.read()
     return contents
 
-print(cat("README.md"))
+# print(cat("README.md"))
 
 import subprocess
 def tree() -> str:
@@ -35,4 +35,14 @@ def tree() -> str:
     result = subprocess.run(["tree"], capture_output=True)
     return result.stdout.decode("utf-8")
 
-print(tree())
+# print(tree())
+
+# TODO: add a smart diff function instead of this. i.e. takes in filename, old_code, and new_code, then replaces the old_code with the new_code in the file.
+def write_to_file(path:str, contents:str) -> str:
+    """
+    Writes to a file.
+    """
+    clean_path = traverse_path(path)
+    with open(clean_path, "w") as file:
+        file.write(contents)
+    return "Success"
