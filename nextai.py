@@ -1,14 +1,15 @@
 import sys
 import requests
 import os
-from pprint import pprint
+
+from pprint import pprint, pformat
 from termcolor import colored
 from dotenv import load_dotenv
 
 
 load_dotenv()
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
-# HUMANLOOP_API_KEY = os.environ["HUMANLOOP_API_KEY"]
+HUMANLOOP_API_KEY = os.environ["HUMANLOOP_API_KEY"]
 
 
 def print_colored(text, color="green"):
@@ -31,6 +32,8 @@ def call_openai_api(chat_history):
     data = {"model": "gpt-3.5-turbo", "messages": chat_history}
     response = requests.post(url, json=data, headers=headers)
 
+    print_colored(pformat(chat_history), "green")
+
     if response.status_code == 200:
         return response.json()["choices"][0]["message"]["content"]
     else:
@@ -43,22 +46,26 @@ def call_humanloop_api(chat_history):
     headers = {
         "accept": "application/json",
         "content-type": "application/json",
-        # "X-API-KEY": HUMANLOOP_API_KEY,
+        "X-API-KEY": HUMANLOOP_API_KEY,
     }
     payload = {
+        "project_id": "nextai",
         "messages": chat_history,
         "model_config": {
             "provider": "openai",
             "endpoint": "chat",
-            "chat_template": [{"role": "system", "message": system_message}],
+            "model": "gpt-3.5-turbo",
+            "chat_template": [{"role": "system", "content": system_message}],
             "max_tokens": -1,
         },
     }
+
     response = requests.post(url, json=payload, headers=headers)
 
     if response.status_code == 200:
         return response.json()["messages"][-1]["message"]
     else:
+        pprint(response.json())
         return f"Error: {response.status_code}"
 
 
