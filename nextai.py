@@ -1,8 +1,10 @@
 import sys
 import requests
 import os
+from pprint import pprint
 from termcolor import colored
 from dotenv import load_dotenv
+
 
 load_dotenv()
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
@@ -32,6 +34,7 @@ def call_openai_api(chat_history):
     if response.status_code == 200:
         return response.json()["choices"][0]["message"]["content"]
     else:
+        pprint(response.json())
         return f"Error: {response.status_code}"
 
 
@@ -70,7 +73,7 @@ You are a helpful assistant that is extremely proficient at writing code, especi
 """
 
 # Set up
-chat_history = [{"role": "system", "message": system_message}]
+chat_history = [{"role": "system", "content": system_message}]
 print_colored("Starting the dev server", "blue")
 
 # Kick off the dev server piping stdout and stderr to files
