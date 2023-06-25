@@ -1,12 +1,11 @@
 import os
 import sys
-from pprint import pformat, pprint
 
-import requests
 from dotenv import load_dotenv
 from termcolor import colored
-from tools.basic_fs import functions
 
+from tools import functions
+from utils.simplechat import chat_generate_text
 
 load_dotenv()
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
@@ -22,8 +21,6 @@ def read_file_tail(file_path, n_lines=10):
         tail = lines[-n_lines:]
     return "".join(tail)
 
-
-from old_code.ai_utils.simplechat import chat_generate_text
 
 model = "gpt-4-32k-0613"
 

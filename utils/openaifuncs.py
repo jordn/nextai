@@ -23,14 +23,11 @@ def complete_with_functions(question, *functions):
     # TODO extend to parsing openapi docs
     req = {
         "model": MODEL,
-        "messages": [
-            {"role": "user", "content": question}
-        ],
-        "functions": [parse_function(f) for f in functions]
+        "messages": [{"role": "user", "content": question}],
+        "functions": [parse_function(f) for f in functions],
     }
     response = openai.ChatCompletion.create(**req)
-    if not any([c["finish_reason"] == "function_call"
-                for c in response["choices"]]):
+    if not any([c["finish_reason"] == "function_call" for c in response["choices"]]):
         return response
 
     messages = call_functions(response, *functions)
@@ -39,8 +36,7 @@ def complete_with_functions(question, *functions):
 
 
 def call_functions(response, *functions):
-    """
-    Make the actual functions using the initial responses
+    """Execute the functions using the initial responses.
 
     :param response:
     :param functions:
@@ -68,8 +64,14 @@ def call_functions(response, *functions):
                         result = f"Error: e"
                     if result != "__pass__":
                         should_continue = True
-                    messages.append({"role": "function", "name": name, "content": json.dumps(result)})
-    return messages,should_continue
+                    messages.append(
+                        {
+                            "role": "function",
+                            "name": name,
+                            "content": json.dumps(result),
+                        }
+                    )
+    return messages, should_continue
 
 
 def parse_annotation(annotation):
@@ -80,12 +82,9 @@ def parse_annotation(annotation):
     :return:
     """
     # TODO how to reliably map python type hint to json type?
-    return {
-        "str": "string",
-        "int": "number",
-        "float": "number",
-        "bool": "boolean"
-    }[annotation.__name__]
+    return {"str": "string", "int": "number", "float": "number", "bool": "boolean"}[
+        annotation.__name__
+    ]
 
 
 def parse_parameter(annotation, docs):
@@ -100,7 +99,7 @@ def parse_parameter(annotation, docs):
     type_name = parse_annotation(annotation)
     return {
         "type": type_name,
-        "description": docs.description if docs is not None else ""
+        "description": docs.description if docs is not None else "",
     }
 
 
@@ -115,20 +114,21 @@ def parse_function(func):
     docs = parse(func.__doc__)
     param_docs = {p.arg_name: p for p in docs.params}
     sig = signature(func)
-    required = [k for k, v in sig.parameters.items()
-                if v.kind == v.POSITIONAL_OR_KEYWORD]
+    required = [
+        k for k, v in sig.parameters.items() if v.kind == v.POSITIONAL_OR_KEYWORD
+    ]
 
     properties = {
         name: parse_parameter(p.annotation, param_docs.get(name))
         for name, p in sig.parameters.items()
     }
     descriptor = {
-            "name": func.__name__,
-            "description": docs.short_description,
-            "parameters": {
-                "type": "object",
-                "properties": properties,
-                "required": required
-            }
-        }
+        "name": func.__name__,
+        "description": docs.short_description,
+        "parameters": {
+            "type": "object",
+            "properties": properties,
+            "required": required,
+        },
+    }
     return descriptor

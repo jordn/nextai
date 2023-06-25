@@ -101,7 +101,7 @@ def chat_generate_text(
 
 
 class ChatConversation:
-    """This claas can be used to persist message history across calls, or simply to track the history of calls without sending the history (amnesia mode)."""
+    """This class can be used to persist message history across calls, or simply to track the history of calls without sending the history (amnesia mode)."""
 
     def __init__(
         self,
