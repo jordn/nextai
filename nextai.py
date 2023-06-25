@@ -41,6 +41,12 @@ def call_openai_api(chat_history):
         pprint(response.json())
         return f"Error: {response.status_code}"
 
+from old_code.ai_utils.simplechat import chat_generate_text
+
+model = "gpt-3.5-turbo-16k-0613"
+from func_tools.basic_fs import functions
+def call_openai_api(chat_history):
+    return chat_generate_text(chat_history,OPENAI_API_KEY,model=model,functions=functions)
 
 def call_humanloop_api(chat_history):
     url = "https://api.humanloop.com/v4/chat"
