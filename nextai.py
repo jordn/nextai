@@ -1,6 +1,7 @@
 import sys
 import requests
 import os
+
 from humanloop import Humanloop
 
 from pprint import pprint, pformat
@@ -10,7 +11,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
-HUMANLOOP_API_KEY = os.environ["HUMANLOOP_API_KEY"]
+# HUMANLOOP_API_KEY = os.environ["HUMANLOOP_API_KEY"]
 humanloop = Humanloop(api_key=HUMANLOOP_API_KEY)
 
 
@@ -24,12 +25,18 @@ def read_file_tail(file_path, n_lines=10):
         tail = lines[-n_lines:]
     return "".join(tail)
 
+
 from old_code.ai_utils.simplechat import chat_generate_text
 
 model = "gpt-3.5-turbo-16k-0613"
 from func_tools.basic_fs import functions
+
+
 def call_openai_api(chat_history):
-    return chat_generate_text(chat_history,OPENAI_API_KEY,model=model,functions=functions)
+    return chat_generate_text(
+        chat_history, OPENAI_API_KEY, model=model, functions=functions
+    )
+
 
 system_message = """
 You are a helpful assistant that is extremely proficient at writing code, especially python and nextjs with Typescript and Tailwindcss. You are given a running nextjs app and are given the last stdout and stderr messages. Please assist the user in fixing and changing the app as they ask.
