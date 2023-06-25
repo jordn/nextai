@@ -25,6 +25,14 @@ def cat(path:str) -> str:
         contents = file.read()
     return contents
 
+def rm(path:str) -> str:
+    """
+    Remove a file.
+    """
+    clean_path = traverse_path(path)
+    os.remove(clean_path)
+    return "Success"
+
 # print(cat("README.md"))
 
 import subprocess
@@ -61,4 +69,4 @@ def execute_bash_command(command:str) -> str:
     result = subprocess.run(command_components, capture_output=True)
     return result.stdout.decode("utf-8")
 
-print(execute_bash_command("npm -h"))
+functions = [ls, cat, rm, tree, write_to_file, execute_bash_command]
