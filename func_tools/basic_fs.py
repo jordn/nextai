@@ -117,6 +117,8 @@ def execute_bash_command(command: str) -> str:
     start_command = command_components[0]
     if start_command not in whitelist:
         return f"Error: Command {start_command} not allowed."
+    if command == "npm run dev":
+        return "Error: you can't run npm run dev--VSCode is already running it."
     result = subprocess.run(command_components, capture_output=True)
     return result.stdout.decode("utf-8")
 
