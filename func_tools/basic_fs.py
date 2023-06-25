@@ -71,7 +71,7 @@ def tree() -> str:
     Show a tree of the current repository.
     """
     print_debug("tree")
-    result = subprocess.run(["rg --files | tree --fromfile"], capture_output=True)
+    result = subprocess.run(["bash","-c","rg --files | tree --fromfile"], capture_output=True)
     return result.stdout.decode("utf-8")
 
 # TODO: add a smart diff function instead of this. i.e. takes in filename, old_code, and new_code, then replaces the old_code with the new_code in the file.
