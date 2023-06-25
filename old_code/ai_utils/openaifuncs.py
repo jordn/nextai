@@ -62,7 +62,10 @@ def call_functions(response, *functions):
             name = func_data["name"]
             for f in functions:
                 if f.__name__ == name:
-                    result = f(**args)
+                    try:
+                        result = f(**args)
+                    except Exception as e:
+                        result = f"Error: e"
                     if result != "__pass__":
                         should_continue = True
                     messages.append({"role": "function", "name": name, "content": json.dumps(result)})

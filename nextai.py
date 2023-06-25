@@ -39,7 +39,7 @@ system_message = """
     You will be given some recent outputs of the Nextjs app. The full logs are in stdout.log and stderr.log.
 
     - use env vars for secrets like OPENAI_API_KEY
-    - When you want think of a command/action, do it yourself! Use cat, ls, write_to_file, execute_bash_command, etc.
+    - When you think of an action to take, do it yourself!
     - do not run 'npm run dev', VSCode is already running it for you
 """
 
@@ -65,7 +65,6 @@ while True:
             "content": f"{user_input}\n\nstdout tail:\n{stdout_tail}\n\nstderr tail:\n{stderr_tail}",
         }
     )
-    print(chat_history)
     ai_response = call_openai_api(chat_history)
     chat_history.append({"role": "assistant", "content": ai_response})
     print_colored(ai_response, "green")
