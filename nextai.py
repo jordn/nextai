@@ -40,6 +40,7 @@ system_message = """
 
     - use env vars for secrets like OPENAI_API_KEY
     - When you want think of a command/action, do it yourself! Use cat, ls, write_to_file, execute_bash_command, etc.
+    - do not run 'npm run dev', VSCode is already running it for you
 """
 
 # Set up
