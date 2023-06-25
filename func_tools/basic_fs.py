@@ -9,6 +9,8 @@ def traverse_path(path: str) -> str:
     abs_path = os.path.abspath(path)
     rel_to_curr = os.path.relpath(abs_path)
     path_components = rel_to_curr.split(os.sep)
+    if path_components[0] == "":
+        path_components[0] = "."
     if path_components[0] == "..":
         return "Error: You can only read within the current repository."
     return rel_to_curr
@@ -52,7 +54,6 @@ def tree() -> str:
     result = subprocess.run(["tree"], capture_output=True)
     return result.stdout.decode("utf-8")
 
-
 # TODO: add a smart diff function instead of this. i.e. takes in filename, old_code, and new_code, then replaces the old_code with the new_code in the file.
 def write_to_file(path: str, contents: str) -> str:
     """
@@ -83,6 +84,40 @@ def execute_bash_command(command: str) -> str:
     result = subprocess.run(command_components, capture_output=True)
     return result.stdout.decode("utf-8")
 
+def execute_bash_command(command: str) -> None:
+    """
+    Executes a bash command.
+    Allowed commands: npm, node, mkdir
+    """
+
+    custom_print("running command", command)
+    whitelist = ["npm", "node", "mkdir", "npx"]
+    command_components = command.split(" ")
+    start_command = command_components[0]
+    if start_command not in whitelist:
+        print(f"Error: Command {start_command} not allowed.")
+        return
+
+    proc = subprocess.Popen(
+        command_components,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        bufsize=1,
+    )
+
+    try:
+        while proc.poll() is None:
+            output = proc.stdout.readline()
+            if output:
+                print(output.decode(), end="")
+            else:
+                break
+
+    except KeyboardInterrupt:
+        proc.terminate()
+
+    proc.communicate()
 
 def edit_file(path:str, old_snippet:str, new_snippet:str) -> str:
     """
@@ -95,6 +130,8 @@ def edit_file(path:str, old_snippet:str, new_snippet:str) -> str:
     with open(clean_path, "r") as file:
         contents = file.read()
     if old_snippet not in contents:
+        print("Snippet not found in file.")
+        print(old_snippet)
         raise Exception("Snippet not found in file. TODO: use a fuzzy string match algo.")
     new_contents = contents.replace(old_snippet, new_snippet)
     with open(clean_path, "w") as file:
