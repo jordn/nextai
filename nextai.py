@@ -23,7 +23,7 @@ def read_file_tail(file_path, n_lines=10):
 
 from old_code.ai_utils.simplechat import chat_generate_text
 
-model = "gpt-3.5-turbo-16k-0613"
+model = "gpt-4-32k-0613"
 from func_tools.basic_fs import functions
 
 
@@ -37,8 +37,6 @@ system_message = """
 You are a helpful assistant that is extremely proficient at writing code, especially python and nextjs with Typescript and Tailwindcss. You are given a running nextjs app and are given the last stdout and stderr messages. Please assist the user in fixing and changing the app as they ask.
 
     - use typing (or type hints)
-    - Think step by step
-    - write pseudocode first before you write code as it is helpful
     - separate all code with 3 backticks
     - use env vars for secrets like OPENAI_API_KEY
 """

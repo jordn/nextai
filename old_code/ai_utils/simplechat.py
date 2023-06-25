@@ -28,8 +28,8 @@ def chat_generate_text(
     frequency_penalty: float = 0.1,
     functions: list[Callable] = [],
 ) -> List[str]:
-    """
-    chat_generate_text - Generates text using the OpenAI API.
+    """Generates text using the OpenAI API.
+
     :param str prompt: prompt for the model
     :param str api_key: api key for the OpenAI API, defaults to None
     :param str api_base_url: api key for the OpenAI API, defaults to https://api.openai.com/v1
@@ -41,6 +41,7 @@ def chat_generate_text(
     :param Optional[Union[str, list]] stop: _description_, defaults to None
     :param float presence_penalty: _description_, defaults to 0
     :param float frequency_penalty: _description_, defaults to 0.1
+
     :return List[str]: _description_
     """
     if api_key is None:
@@ -59,7 +60,6 @@ def chat_generate_text(
     opts = {
         "model": model,
         "temperature": temperature,
-        "max_tokens": max_tokens,
         "n": n,
         "stop": stop,
         "presence_penalty": presence_penalty,
