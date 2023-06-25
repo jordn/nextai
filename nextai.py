@@ -24,23 +24,6 @@ def read_file_tail(file_path, n_lines=10):
         tail = lines[-n_lines:]
     return "".join(tail)
 
-
-def call_openai_api(chat_history):
-    url = "https://api.openai.com/v1/chat/completions"
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {OPENAI_API_KEY}",
-    }
-    data = {"model": "gpt-3.5-turbo", "messages": chat_history}
-    response = requests.post(url, json=data, headers=headers)
-    # print_colored(pformat(chat_history), "green")
-
-    if response.status_code == 200:
-        return response.json()["choices"][0]["message"]["content"]
-    else:
-        pprint(response.json())
-        return f"Error: {response.status_code}"
-
 from old_code.ai_utils.simplechat import chat_generate_text
 
 model = "gpt-3.5-turbo-16k-0613"
