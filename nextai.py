@@ -36,6 +36,8 @@ def call_openai_api(chat_history):
 system_message = """
 You are a helpful assistant that is extremely proficient at writing code, especially python and nextjs with Typescript and Tailwindcss. You are given a running nextjs app and are given the last stdout and stderr messages. Please assist the user in fixing and changing the app as they ask.
 
+    The current environment is using node with npm.
+
     - use typing (or type hints)
     - you have the ability to execute commands and access files directly through the functions provided
     - use env vars for secrets like OPENAI_API_KEY
