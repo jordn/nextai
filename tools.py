@@ -1,28 +1,5 @@
 import os
 import subprocess
-from termcolor import colored
-
-should_log = True
-
-
-def print_user(text: str):
-    if should_log:
-        print(colored(text, "white"))
-
-
-def print_assistant(text: str):
-    if should_log:
-        print(colored(text, "green"))
-
-
-def print_debug(text: str):
-    if should_log:
-        print(colored(text, "blue"))
-
-
-def print_system(text: str):
-    if should_log:
-        print(colored(text, "blue"))
 
 
 def traverse_path(path: str) -> str:
@@ -71,8 +48,11 @@ def tree() -> str:
     Show a tree of the current repository.
     """
     print_debug("tree")
-    result = subprocess.run(["bash","-c","rg --files | tree --fromfile"], capture_output=True)
+    result = subprocess.run(
+        ["bash", "-c", "rg --files | tree --fromfile"], capture_output=True
+    )
     return result.stdout.decode("utf-8")
+
 
 # TODO: add a smart diff function instead of this. i.e. takes in filename, old_code, and new_code, then replaces the old_code with the new_code in the file.
 def write_to_file(path: str, contents: str) -> str:
@@ -122,6 +102,7 @@ def execute_bash_command(command: str) -> str:
     result = subprocess.run(command_components, capture_output=True)
     return result.stdout.decode("utf-8")
 
+
 def execute_bash_command(command: str) -> None:
     """
     Executes a bash command.
@@ -157,6 +138,7 @@ def execute_bash_command(command: str) -> None:
 
     proc.communicate()
 
+
 def edit_file(path: str, old_snippet: str, new_snippet: str) -> str:
     """
     Edits part of a file.
@@ -177,7 +159,9 @@ def edit_file(path: str, old_snippet: str, new_snippet: str) -> str:
     if old_snippet not in contents:
         print("Snippet not found in file.")
         print(old_snippet)
-        raise Exception("Snippet not found in file. TODO: use a fuzzy string match algo.")
+        raise Exception(
+            "Snippet not found in file. TODO: use a fuzzy string match algo."
+        )
     new_contents = contents.replace(old_snippet, new_snippet)
     with open(clean_path, "w") as file:
         file.write(new_contents)

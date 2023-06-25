@@ -1,10 +1,33 @@
-## Next.ai Code Assistant
+## Next.AI / AutoCode / GPT SWE
 
-Develop a nextjs app through natural language.
+Real time programming with your AI assistant.
+
+This is a demonstration of a new way of developing software. 
+
+What it's not: it's not a big questionnaire (gpt-engineer) or upfront essay (smol developer)
+ about how you want your system to behave. Let's be honest, you don't know that yet!
+
+Instead, the core idea is to make the iteration loop as tight as possible, so
+that you can quickly respond, correct and improve as you develop your thoughts and your software.
+
+### How it works
+
+> “There is no failure. Only feedback.” – Robert Allen
+
+This is a demonstration of AutoCode for building a NextJS web app.
+
+
+1. AutoCode is given a set of tools for exploring the code base, installing packages and editing files
+2. You ask it to do stuff in chat
+3. The dev server is hot-reloaded so you can see the effect immediately
+4. Any errors are piped back into the the chat so the AI can fix them automatically
+
+The tools are simple Python functions converted into OpenAI function specs. It's a chat so you can underspecify and correct as you go.
+
 
 ### Getting Started
 
-To run this project locally, follow these steps:
+To develop using AutoCode this is what you do:
 
 1. Install the dependencies by running `npm install`.
 2. Start the development server by running `npm run dev 2> >(tee stderr.log >&2) | tee stdout.log`.
