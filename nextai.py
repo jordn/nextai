@@ -30,7 +30,7 @@ from func_tools.basic_fs import functions
 def call_openai_api(chat_history):
     return chat_generate_text(
         chat_history, OPENAI_API_KEY, model=model, functions=functions
-    )
+    )["choices"][0]["message"]["content"]
 
 
 system_message = """

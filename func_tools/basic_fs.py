@@ -46,7 +46,7 @@ def tree() -> str:
     """
     Show a tree of the current repository.
     """
-    custom_print("calling tree",path)
+    custom_print("calling tree")
     result = subprocess.run(["tree"], capture_output=True)
     return result.stdout.decode("utf-8")
 
@@ -79,4 +79,4 @@ def execute_bash_command(command:str) -> str:
     result = subprocess.run(command_components, capture_output=True)
     return result.stdout.decode("utf-8")
 
-functions = [ls, cat, rm, tree, write_to_file, execute_bash_command]
+functions = [ls, cat, tree, write_to_file, execute_bash_command]
