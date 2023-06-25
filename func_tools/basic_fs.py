@@ -22,9 +22,6 @@ def ls(path: str) -> str:
     return "\n".join(files)
 
 
-# print(ls("././old_code"))
-
-
 def cat(path: str) -> str:
     """
     List the contents of a file.
@@ -85,4 +82,21 @@ def execute_bash_command(command: str) -> str:
     return result.stdout.decode("utf-8")
 
 
-functions = [ls, cat, tree, write_to_file, execute_bash_command]
+def edit_file(path:str, old_snippet:str, new_snippet:str) -> str:
+    """
+    Edits part of a file.
+    Use this to replace a snippet of code in the file with a new snippet of code.
+    i.e. edit_file("index.js", "console.log('hello')", "console.log('goodbye')")
+    """
+    custom_print("editing", path)#, old_snippet[:50], new_snippet[:50])
+    clean_path = traverse_path(path)
+    with open(clean_path, "r") as file:
+        contents = file.read()
+    if old_snippet not in contents:
+        raise Exception("Snippet not found in file. TODO: use a fuzzy string match algo.")
+    new_contents = contents.replace(old_snippet, new_snippet)
+    with open(clean_path, "w") as file:
+        file.write(new_contents)
+    return "Success"
+
+functions = [ls, cat, tree, write_to_file, execute_bash_command, edit_file]
