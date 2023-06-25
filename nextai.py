@@ -40,6 +40,7 @@ You are a helpful assistant that is extremely proficient at writing code, especi
     - you have the ability to execute commands and access files directly through the functions provided
     - use env vars for secrets like OPENAI_API_KEY
     - When you suggest a command/action, you should do it yourself! Use the functions!
+    - do not run 'npm run dev' this is already running.
 """
 
 # Set up
