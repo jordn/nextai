@@ -1,8 +1,28 @@
 import os
 import subprocess
+from termcolor import colored
 
 should_log = True
-custom_print = print if should_log else (lambda x: None)
+
+
+def print_user(text: str):
+    if should_log:
+        print(colored(text, "white"))
+
+
+def print_assistant(text: str):
+    if should_log:
+        print(colored(text, "green"))
+
+
+def print_debug(text: str):
+    if should_log:
+        print(colored(text, "blue"))
+
+
+def print_system(text: str):
+    if should_log:
+        print(colored(text, "blue"))
 
 
 def traverse_path(path: str) -> str:
@@ -16,7 +36,7 @@ def traverse_path(path: str) -> str:
 
 def ls(path: str) -> str:
     """List files in a directory."""
-    custom_print("calling ls", path)
+    print_debug(f"ls {path}")
     clean_path = traverse_path(path)
     files = os.listdir(clean_path)
     return "\n".join(files)
@@ -26,7 +46,7 @@ def cat(path: str) -> str:
     """
     List the contents of a file.
     """
-    custom_print("calling cat", path)
+    print_debug(f"cat {path}")
     clean_path = traverse_path(path)
     with open(clean_path, "r") as file:
         contents = file.read()
@@ -38,7 +58,7 @@ def cat(path: str) -> str:
 #     """
 #     Remove a file.
 #     """
-#     custom_print("calling rm", path)
+#     print_debug("calling rm", path)
 #     clean_path = traverse_path(path)
 #     os.remove(clean_path)
 #     return "Success"
@@ -48,7 +68,7 @@ def tree() -> str:
     """
     Show a tree of the current repository.
     """
-    custom_print("calling tree")
+    print_debug("tree")
     result = subprocess.run(["tree"], capture_output=True)
     return result.stdout.decode("utf-8")
 
@@ -58,7 +78,17 @@ def write_to_file(path: str, contents: str) -> str:
     """
     Writes to a file.
     """
-    custom_print("writing", path, contents[:50])
+    print_debug(f"write ({path}): {contents[:20]}...")
+
+    # TODO: do this in a better place.
+    # Idea is that when a change is made,
+    # we want to only deal with fresh errors afterwards.
+    # Clear stdout.log and stderr.log
+    with open("stdout.log", "w") as file:
+        file.write("")
+    with open("stderr.log", "w") as file:
+        file.write("")
+
     clean_path = traverse_path(path)
     with open(clean_path, "w") as file:
         # Make the directory if it doesn't exist
@@ -73,8 +103,14 @@ def execute_bash_command(command: str) -> str:
     Executes a bash command.
     Allowed commands: npm, node, mkdir
     """
+    print_debug(f"bash: {command}")
 
-    custom_print("running command", command)
+    # Clear stdout.log and stderr.log
+    with open("stdout.log", "w") as file:
+        file.write("")
+    with open("stderr.log", "w") as file:
+        file.write("")
+
     whitelist = ["npm", "node", "mkdir", "npx"]
     command_components = command.split(" ")
     start_command = command_components[0]
@@ -84,21 +120,32 @@ def execute_bash_command(command: str) -> str:
     return result.stdout.decode("utf-8")
 
 
-def edit_file(path:str, old_snippet:str, new_snippet:str) -> str:
+def edit_file(path: str, old_snippet: str, new_snippet: str) -> str:
     """
     Edits part of a file.
     Use this to replace a snippet of code in the file with a new snippet of code.
     i.e. edit_file("index.js", "console.log('hello')", "console.log('goodbye')")
     """
-    custom_print("editing", path)#, old_snippet[:50], new_snippet[:50])
+    print_debug(f"edit ({path}):")
+
+    # Clear stdout.log and stderr.log
+    with open("stdout.log", "w") as file:
+        file.write("")
+    with open("stderr.log", "w") as file:
+        file.write("")
+
     clean_path = traverse_path(path)
     with open(clean_path, "r") as file:
         contents = file.read()
     if old_snippet not in contents:
-        raise Exception("Snippet not found in file. TODO: use a fuzzy string match algo.")
+        raise Exception(
+            "Snippet not found in file. TODO: use a fuzzy string match algo."
+        )
     new_contents = contents.replace(old_snippet, new_snippet)
     with open(clean_path, "w") as file:
         file.write(new_contents)
+
     return "Success"
+
 
 functions = [ls, cat, tree, write_to_file, execute_bash_command, edit_file]

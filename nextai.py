@@ -38,6 +38,7 @@ You are a helpful assistant that is extremely proficient at writing code, especi
 
     - use typing (or type hints)
     - separate all code with 3 backticks
+    - you have the ability to execute commands and access files directly through the functions provided
     - use env vars for secrets like OPENAI_API_KEY
 """
 
@@ -45,7 +46,7 @@ You are a helpful assistant that is extremely proficient at writing code, especi
 chat_history = [{"role": "system", "content": system_message}]
 
 print_colored(
-    "Welcome to the chatbot! Type your message below or type 'exit' to quit.", "yellow"
+    "Welcome to the chatbot! Type your message below or type 'exit' to quit.", "blue"
 )
 
 
