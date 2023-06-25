@@ -51,11 +51,7 @@ def tree() -> str:
     """
     Show a tree of the current repository.
     """
-<<<<<<< Updated upstream
     custom_print("calling tree")
-=======
-    custom_print("calling tree", path)
->>>>>>> Stashed changes
     result = subprocess.run(["tree"], capture_output=True)
     return result.stdout.decode("utf-8")
 
@@ -88,9 +84,5 @@ def execute_bash_command(command: str) -> str:
     result = subprocess.run(command_components, capture_output=True)
     return result.stdout.decode("utf-8")
 
-<<<<<<< Updated upstream
-functions = [ls, cat, tree, write_to_file, execute_bash_command]
-=======
 
 functions = [ls, cat, tree, write_to_file, execute_bash_command]
->>>>>>> Stashed changes
