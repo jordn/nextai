@@ -31,34 +31,6 @@ from func_tools.basic_fs import functions
 def call_openai_api(chat_history):
     return chat_generate_text(chat_history,OPENAI_API_KEY,model=model,functions=functions)
 
-def call_humanloop_api(chat_history):
-    url = "https://api.humanloop.com/v4/chat"
-    headers = {
-        "accept": "application/json",
-        "content-type": "application/json",
-        "X-API-KEY": HUMANLOOP_API_KEY,
-    }
-    payload = {
-        "project_id": "nextai",
-        "messages": chat_history,
-        "model_config": {
-            "provider": "openai",
-            "endpoint": "chat",
-            "model": "gpt-3.5-turbo",
-            "chat_template": [{"role": "system", "content": system_message}],
-            "max_tokens": -1,
-        },
-    }
-
-    response = requests.post(url, json=payload, headers=headers)
-
-    if response.status_code == 200:
-        return response.json()["messages"][-1]["message"]
-    else:
-        pprint(response.json())
-        return f"Error: {response.status_code}"
-
-
 system_message = """
 You are a helpful assistant that is extremely proficient at writing code, especially python and nextjs with Typescript and Tailwindcss. You are given a running nextjs app and are given the last stdout and stderr messages. Please assist the user in fixing and changing the app as they ask.
 
@@ -84,18 +56,17 @@ print_colored(
 while True:
     print(">", end=" ")
     user_input = input()
-
     if user_input.lower() == "exit":
         break
 
     stdout_tail = read_file_tail("stdout.log")
     stderr_tail = read_file_tail("stderr.log")
-    user_message = (
-        f"{user_input}\n\nstdout tail:\n{stdout_tail}\n\nstderr tail:\n{stderr_tail}"
+    chat_history.append(
+        {
+            "role": "system",
+            "content": f"{user_input}\n\nstdout tail:\n{stdout_tail}\n\nstderr tail:\n{stderr_tail}",
+        }
     )
-    chat_history.append({"role": "user", "content": user_message})
-
     ai_response = call_openai_api(chat_history)
     chat_history.append({"role": "assistant", "content": ai_response})
-
     print_colored(ai_response, "green")
