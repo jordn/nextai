@@ -1,18 +1,13 @@
-import sys
-import requests
 import os
+import sys
+from pprint import pformat, pprint
 
-from humanloop import Humanloop
-
-from pprint import pprint, pformat
-from termcolor import colored
+import requests
 from dotenv import load_dotenv
-
+from termcolor import colored
 
 load_dotenv()
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
-# HUMANLOOP_API_KEY = os.environ["HUMANLOOP_API_KEY"]
-humanloop = Humanloop(api_key=HUMANLOOP_API_KEY)
 
 
 def print_colored(text, color="green"):
