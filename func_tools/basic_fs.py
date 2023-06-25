@@ -64,6 +64,8 @@ def write_to_file(path: str, contents: str) -> str:
     custom_print("writing", path, contents[:50])
     clean_path = traverse_path(path)
     with open(clean_path, "w") as file:
+        # Make the directory if it doesn't exist
+        os.makedirs(os.path.dirname(clean_path), exist_ok=True)
         file.write(contents)
     return "Success"
 
