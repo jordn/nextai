@@ -1,11 +1,10 @@
 import os
-import sys
 
 from dotenv import load_dotenv
 from termcolor import colored
 
 from tools import functions
-from utils.simplechat import chat_generate_text
+from utils.openai import chat_generate_text
 
 load_dotenv()
 OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]

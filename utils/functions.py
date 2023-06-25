@@ -75,8 +75,7 @@ def call_functions(response, *functions):
 
 
 def parse_annotation(annotation):
-    """
-    Convert the type annotation to type string for json
+    """Convert the type annotation to type string for json
 
     :param annotation:
     :return:
@@ -88,9 +87,8 @@ def parse_annotation(annotation):
 
 
 def parse_parameter(annotation, docs):
-    """
-    Convert the parameter signature and docstring
-    to json for function api
+    """Convert the parameter signature and docstring
+    to json for function API.
 
     :param annotation:
     :param docs:

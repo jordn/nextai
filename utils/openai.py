@@ -4,7 +4,7 @@ import openai
 from nanoid import generate
 from json import loads, dumps
 
-from .openaifuncs import call_functions, parse_function
+from .functions import call_functions, parse_function
 import backoff
 from openai.error import APIError, APIConnectionError
 

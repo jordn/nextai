@@ -4,7 +4,7 @@ import openai
 from nanoid import generate
 from json import loads, dumps
 
-from .openaifuncs import call_functions, parse_function
+from .functions import call_functions, parse_function
 import backoff
 from openai.error import APIError, APIConnectionError
 
@@ -70,7 +70,9 @@ def chat_generate_text(
         if len(functions) > 0
         else {}
     )
-    response = openai.ChatCompletion.create(**opts, **func_opts, messages=messages,stream=True)
+    response = openai.ChatCompletion.create(
+        **opts, **func_opts, messages=messages, stream=True
+    )
     output = []
     for chunk in response:
         output.append(chunk)
@@ -111,11 +113,14 @@ key = os.environ.get("OPENAI_API_KEY", None)
 if key is None:
     raise Exception("OpenAI API key not found.")
 
-def ls(path:str)->str:
+
+def ls(path: str) -> str:
     """
     Lists the files in a directory.
     """
     return "a.txt\nb.txt\nc.txt"
 
 
-chat_generate_text("What files are in the current directory?", api_key=key,functions=[ls])
+chat_generate_text(
+    "What files are in the current directory?", api_key=key, functions=[ls]
+)
