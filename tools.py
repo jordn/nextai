@@ -1,6 +1,8 @@
 import os
 import subprocess
 
+from utils.logging import print_debug
+
 
 def traverse_path(path: str) -> str:
     abs_path = os.path.abspath(path)
@@ -109,7 +111,7 @@ def execute_bash_command(command: str) -> None:
     Allowed commands: npm, node, mkdir
     """
 
-    print("running command", command)
+    print_debug(f"run `{command}`")
     whitelist = ["npm", "node", "mkdir", "npx"]
     command_components = command.split(" ")
     start_command = command_components[0]
