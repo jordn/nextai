@@ -1,5 +1,6 @@
 import os
 import subprocess
+from utils.logging import print_debug
 
 
 def traverse_path(path: str) -> str:
@@ -53,6 +54,14 @@ def tree() -> str:
     )
     return result.stdout.decode("utf-8")
 
+def clear_logs():
+    """
+    Clear stdout.log and stderr.log
+    """
+    with open("stdout.log", "w") as file:
+        file.write("")
+    with open("stderr.log", "w") as file:
+        file.write("")
 
 # TODO: add a smart diff function instead of this. i.e. takes in filename, old_code, and new_code, then replaces the old_code with the new_code in the file.
 def write_to_file(path: str, contents: str) -> str:
@@ -61,14 +70,7 @@ def write_to_file(path: str, contents: str) -> str:
     """
     print_debug(f"write ({path}): {contents[:20]}...")
 
-    # TODO: do this in a better place.
-    # Idea is that when a change is made,
-    # we want to only deal with fresh errors afterwards.
-    # Clear stdout.log and stderr.log
-    with open("stdout.log", "w") as file:
-        file.write("")
-    with open("stderr.log", "w") as file:
-        file.write("")
+    clear_logs() # Get rid of the old error messages. Theoretically, the model has fixed/learned from the error.
 
     clean_path = traverse_path(path)
     with open(clean_path, "w") as file:
