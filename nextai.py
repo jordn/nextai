@@ -1,14 +1,33 @@
 import os
-import sys
-from pprint import pformat, pprint
-
-import requests
 from dotenv import load_dotenv
 from termcolor import colored
+from fastapi import FastAPI
+import threading
+import subprocess
+import httpx
 
 load_dotenv()
-OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
+# TODO: add cors
+app = FastAPI()
+
+errors = []
+
+@app.post("/error")
+def handle_error(error):
+    print("Got error", error)
+    errors.append(error)
+
+@app.get("/errors")
+def get_errors():
+    return errors
+
+# launch sub process in background task while redirecting all output to /dev/null
+# This caused infinite loop
+# thread = threading.Thread(target=lambda: subprocess.check_output(["uvicorn", "nextai:app", "--port", "3070"]))
+# thread.start()
+# uvicorn.run("nextai:app", host='0.0.0.0', port=3050)
 
 def print_colored(text, color="green"):
     print(colored(text, color))
@@ -64,7 +83,7 @@ while True:
     chat_history.append(
         {
             "role": "system",
-            "content": f"{user_input}\n\nstdout tail:\n{stdout_tail}\n\nstderr tail:\n{stderr_tail}",
+            "content": f"{user_input}\n\nstdout tail:\n{stdout_tail}\n\nstderr tail:\n{stderr_tail}\nerrors:\n{errors}",
         }
     )
     ai_response = call_openai_api(chat_history)

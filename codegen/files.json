@@ -1,0 +1,89 @@
+{
+    "type": "directory",
+    "name": "weather-app",
+    "contents": [
+        {
+            "type": "directory",
+            "name": "src",
+            "contents": [
+                {
+                    "type": "directory",
+                    "name": "components",
+                    "contents": [
+                        {
+                            "type": "file",
+                            "name": "Header.tsx",
+                            "description": "Contains the header component for the app"
+                        },
+                        {
+                            "type": "file",
+                            "name": "CurrentWeather.tsx",
+                            "description": "Contains the component to display current weather conditions"
+                        },
+                        {
+                            "type": "file",
+                            "name": "Forecast.tsx",
+                            "description": "Contains the component to display weather forecast for upcoming days"
+                        },
+                        {
+                            "type": "file",
+                            "name": "UnitSwitcher.tsx",
+                            "description": "Contains the component to switch between temperature units"
+                        },
+                        {
+                            "type": "file",
+                            "name": "DarkModeSwitch.tsx",
+                            "description": "Contains the component to enable/disable dark mode"
+                        },
+                        {
+                            "type": "file",
+                            "name": "ErrorNotification.tsx",
+                            "description": "Contains the component to display error messages"
+                        }
+                    ]
+                },
+                {
+                    "type": "directory",
+                    "name": "utils",
+                    "contents": [
+                        {
+                            "type": "file",
+                            "name": "api.ts",
+                            "description": "Contains functions to interact with the OpenWeatherMap API"
+                        },
+                        {
+                            "type": "file",
+                            "name": "weatherIcons.ts",
+                            "description": "Contains mappings of weather conditions to corresponding icons from react-icons package"
+                        }
+                    ]
+                },
+                {
+                    "type": "file",
+                    "name": "App.tsx",
+                    "description": "Main component that renders the entire app"
+                },
+                {
+                    "type": "file",
+                    "name": "index.tsx",
+                    "description": "Entry point of the app, renders the App component"
+                },
+                {
+                    "type": "file",
+                    "name": "index.css",
+                    "description": "Global CSS styles for the app"
+                }
+            ]
+        },
+        {
+            "type": "file",
+            "name": "package.json",
+            "description": "Contains project dependencies and scripts"
+        },
+        {
+            "type": "file",
+            "name": "tsconfig.json",
+            "description": "TypeScript configuration file"
+        }
+    ]
+}
