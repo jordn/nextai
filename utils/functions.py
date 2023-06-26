@@ -10,31 +10,6 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 MODEL = "gpt-3.5-turbo-0613"
 
 
-def complete_with_functions(question, *functions):
-    """
-    Call the openai completion function with specified functions
-    to be called optionally. The function signatures can be parsed
-    automatically.
-
-    :param question:
-    :param functions:
-    :return:
-    """
-    # TODO extend to parsing openapi docs
-    req = {
-        "model": MODEL,
-        "messages": [{"role": "user", "content": question}],
-        "functions": [parse_function(f) for f in functions],
-    }
-    response = openai.ChatCompletion.create(**req)
-    if not any([c["finish_reason"] == "function_call" for c in response["choices"]]):
-        return response
-
-    messages = call_functions(response, *functions)
-    req["messages"].extend(messages)
-    return openai.ChatCompletion.create(**req)
-
-
 def call_functions(response, *functions):
     """Execute the functions using the initial responses.
 

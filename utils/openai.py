@@ -17,8 +17,6 @@ DEFAULT_BASE_URL = "https://api.openai.com/v1"
 @backoff.on_exception(backoff.expo, (APIError, APIConnectionError))
 def chat_generate_text(
     messages: list[dict] | str,
-    api_key: str = None,
-    api_base_url: str = DEFAULT_BASE_URL,
     model: str = "gpt-3.5-turbo-16k-0613",
     temperature: float = 0.5,
     max_tokens: int = 256,
@@ -28,7 +26,7 @@ def chat_generate_text(
     frequency_penalty: float = 0.1,
     functions: list[Callable] = [],
 ) -> List[str]:
-    """Generates text using the OpenAI API.
+    """Chat Completion from OpenAI with function that are executed.
 
     :param str prompt: prompt for the model
     :param str api_key: api key for the OpenAI API, defaults to None
@@ -44,35 +42,28 @@ def chat_generate_text(
 
     :return List[str]: _description_
     """
-    if api_key is None:
-        api_key = os.environ.get("OPENAI_API_KEY", None)
-    assert api_key is not None, "OpenAI API key not found."
-
-    if api_base_url is DEFAULT_BASE_URL:
-        api_base_url = os.environ.get("OPENAI_API_BASE", DEFAULT_BASE_URL)
-
-    openai.api_key = api_key
-    openai.api_base = api_base_url
-
-    if isinstance(messages, str):
-        messages = [{"role": "user", "content": messages}]
-
-    opts = {
-        "model": model,
-        "temperature": temperature,
-        "n": n,
-        "stop": stop,
-        "presence_penalty": presence_penalty,
-        "frequency_penalty": frequency_penalty,
-    }
     func_opts = (
         {"functions": [parse_function(f) for f in functions]}
         if len(functions) > 0
         else {}
     )
-    response = openai.ChatCompletion.create(**opts, **func_opts, messages=messages)
-    # print(response)
 
+    openai.api_key = os.environ["OPENAI_API_KEY"]
+    # openai.api_base = os.environ.get("OPENAI_API_BASE_URL", DEFAULT_BASE_URL)
+
+    response = openai.ChatCompletion.create(
+        **{
+            "model": model,
+            "temperature": temperature,
+            "n": n,
+            "stop": stop,
+            "presence_penalty": presence_penalty,
+            "frequency_penalty": frequency_penalty,
+        },
+        **func_opts,
+        messages=messages,
+    )
+    # print(response)
     if not any([c["finish_reason"] == "function_call" for c in response["choices"]]):
         return response
 
@@ -85,8 +76,6 @@ def chat_generate_text(
     if should_continue:
         return chat_generate_text(
             messages,
-            api_key,
-            api_base_url,
             model,
             temperature,
             max_tokens,
