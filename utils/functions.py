@@ -61,7 +61,7 @@ def call_functions(response, *functions):
                     try:
                         result = f(**args)
                     except Exception as e:
-                        result = f"Error: e"
+                        result = f"Error: {e}"
                     if result != "__pass__":
                         should_continue = True
                     messages.append(

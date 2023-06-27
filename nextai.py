@@ -1,5 +1,3 @@
-import os
-
 from dotenv import load_dotenv
 from termcolor import colored
 
@@ -7,8 +5,6 @@ from tools import functions
 from utils.openai import chat_generate_text
 
 load_dotenv()
-OPENAI_API_KEY = os.environ["OPENAI_API_KEY"]
-
 
 def print_colored(text, color="green"):
     print(colored(text, color))
@@ -25,8 +21,9 @@ model = "gpt-4-32k-0613"
 
 
 def call_openai_api(chat_history):
+    # Loads env vars (OPENAI_API_KEY) automatically
     return chat_generate_text(
-        chat_history, OPENAI_API_KEY, model=model, functions=functions
+        chat_history, model=model, functions=functions
     )["choices"][0]["message"]["content"]
 
 

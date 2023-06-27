@@ -37,13 +37,15 @@ This is a demonstration of AutoCode for building a NextJS web app.
 
 The tools are simple Python functions converted into OpenAI function specs. It's a chat so you can underspecify and correct as you go. 
 
+**Note:** We used GPT-4, like smol-developer and gpt-engineer do, and this will not work as well with GPT 3.5
 
 ### Getting Started
 
 To develop using AutoCode this is what you do:
 
-1. Install the dependencies by running `npm install`.
-2. Start the development server by running `npm run dev 2> >(tee stderr.log >&2) | tee stdout.log`
-3. Open your browser and navigate to `http://localhost:3000` to see the application.
-4. Start the AI assistant by running `python nextai`.
+1. Install the dependencies: `brew install ripgrep tree` and `npm install`
+2. Rename `.env.sample` to `.env` and add your OpenAI API key
+3. Start the development server by running `npm run dev 2> >(tee stderr.log >&2) | tee stdout.log`
+4. Open your browser and navigate to `http://localhost:3000` to see the application
+5. Start the AI assistant by running `python nextai`
 
