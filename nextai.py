@@ -1,33 +1,9 @@
 import os
 from dotenv import load_dotenv
 from termcolor import colored
-from fastapi import FastAPI
-import threading
-import subprocess
 import httpx
 
 load_dotenv()
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-
-# TODO: add cors
-app = FastAPI()
-
-errors = []
-
-@app.post("/error")
-def handle_error(error):
-    print("Got error", error)
-    errors.append(error)
-
-@app.get("/errors")
-def get_errors():
-    return errors
-
-# launch sub process in background task while redirecting all output to /dev/null
-# This caused infinite loop
-# thread = threading.Thread(target=lambda: subprocess.check_output(["uvicorn", "nextai:app", "--port", "3070"]))
-# thread.start()
-# uvicorn.run("nextai:app", host='0.0.0.0', port=3050)
 
 def print_colored(text, color="green"):
     print(colored(text, color))
@@ -48,7 +24,7 @@ from func_tools.basic_fs import functions
 
 def call_openai_api(chat_history):
     return chat_generate_text(
-        chat_history, OPENAI_API_KEY, model=model, functions=functions
+        chat_history, model=model, functions=functions
     )["choices"][0]["message"]["content"]
 
 
@@ -80,12 +56,15 @@ while True:
 
     stdout_tail = read_file_tail("stdout.log")
     stderr_tail = read_file_tail("stderr.log")
+    frontend_errors = httpx.get("http://localhost:3070/errors").json()
     chat_history.append(
         {
             "role": "system",
-            "content": f"{user_input}\n\nstdout tail:\n{stdout_tail}\n\nstderr tail:\n{stderr_tail}\nerrors:\n{errors}",
+            "content": f"{user_input}\n\nstdout tail:\n{stdout_tail}\n\nstderr tail:\n{stderr_tail}\nerrors:\n{frontend_errors}",
         }
     )
     ai_response = call_openai_api(chat_history)
     chat_history.append({"role": "assistant", "content": ai_response})
+    # Takes two tries to fix the error, if we delete before then it won't fix by itself
+    # httpx.delete("http://localhost:3070/errors")
     print_colored(ai_response, "green")
