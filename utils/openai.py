@@ -56,6 +56,7 @@ def chat_generate_text(
             "model": model,
             "temperature": temperature,
             "n": n,
+            # TODO: remove n.
             "stop": stop,
             "presence_penalty": presence_penalty,
             "frequency_penalty": frequency_penalty,
@@ -67,12 +68,13 @@ def chat_generate_text(
     if not any([c["finish_reason"] == "function_call" for c in response["choices"]]):
         return response
 
+    # TODO: do the continue and exception handling here
     new_messages, should_continue = call_functions(response, *functions)
 
-    def process(dct):
-        return loads(dumps(dct))
+    # def process(dct):
+    #     return loads(dumps(dct))
 
-    messages.extend(process(new_messages))
+    messages.extend(new_messages)
     if should_continue:
         return chat_generate_text(
             messages,
