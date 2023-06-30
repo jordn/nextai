@@ -7,7 +7,42 @@ import openai
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-MODEL = "gpt-3.5-turbo-0613"
+
+class Message:
+    role: str
+    name: str
+    content: str
+
+
+def parse_function(func):
+    """Creates JSON Schema from docstring and type annotations.
+
+    Automatically create a signature for GPT functions
+
+    :param func:
+    :return:
+    """
+    docs = parse(func.__doc__)
+    param_docs = {p.arg_name: p for p in docs.params}
+    sig = signature(func)
+    required = [
+        k for k, v in sig.parameters.items() if v.kind == v.POSITIONAL_OR_KEYWORD
+    ]
+
+    properties = {
+        name: parse_parameter(p.annotation, param_docs.get(name))
+        for name, p in sig.parameters.items()
+    }
+    descriptor = {
+        "name": func.__name__,
+        "description": docs.short_description,
+        "parameters": {
+            "type": "object",
+            "properties": properties,
+            "required": required,
+        },
+    }
+    return descriptor
 
 
 def call_functions(response, *functions):
@@ -19,6 +54,8 @@ def call_functions(response, *functions):
     """
     messages = []
     should_continue = False
+    # todo: this doesn't make much sense. There should only be one choice unless n > 1
+    # and then if that was the case we wouldn't just want to append them all to a flat list.
     for c in response["choices"]:
         if c["finish_reason"] == "function_call":
             msg = c["message"]
@@ -29,15 +66,20 @@ def call_functions(response, *functions):
             except:
                 print("Error parsing arguments for function call")
                 print("Function call:", func_data)
+                # TODO: raise an error here
+                raise
                 input("What to do?")
             name = func_data["name"]
+
             for f in functions:
                 if f.__name__ == name:
                     try:
                         result = f(**args)
                     except Exception as e:
+                        # TODO: raise an error here
                         result = f"Error: e"
                     if result != "__pass__":
+                        # TODO: does this ever happen?
                         should_continue = True
                     messages.append(
                         {
@@ -74,34 +116,3 @@ def parse_parameter(annotation, docs):
         "type": type_name,
         "description": docs.description if docs is not None else "",
     }
-
-
-def parse_function(func):
-    """
-    Parse the docstring and type annotations
-    to automatically create a signature for GPT functions
-
-    :param func:
-    :return:
-    """
-    docs = parse(func.__doc__)
-    param_docs = {p.arg_name: p for p in docs.params}
-    sig = signature(func)
-    required = [
-        k for k, v in sig.parameters.items() if v.kind == v.POSITIONAL_OR_KEYWORD
-    ]
-
-    properties = {
-        name: parse_parameter(p.annotation, param_docs.get(name))
-        for name, p in sig.parameters.items()
-    }
-    descriptor = {
-        "name": func.__name__,
-        "description": docs.short_description,
-        "parameters": {
-            "type": "object",
-            "properties": properties,
-            "required": required,
-        },
-    }
-    return descriptor
