@@ -1,4 +1,4 @@
-## AutoCode 🤖
+## CodePilot
 
 _**Real time programming with your AI assistant.**_
 
