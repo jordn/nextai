@@ -61,7 +61,7 @@ def write_to_file(path: str, contents: str) -> str:
     """
     Writes to a file.
     """
-    print_debug(f"write ({path}): {contents[:20]}...")
+    print_debug(f"write {path} [{contents[:20]} ({len(contents)})")
 
     # TODO: do this in a better place.
     # Idea is that when a change is made,
@@ -80,29 +80,29 @@ def write_to_file(path: str, contents: str) -> str:
     return "Success"
 
 
-# TODO: handle stdout, stderr. Does this work automatically?
-def execute_bash_command(command: str) -> str:
-    """
-    Executes a bash command.
-    Allowed commands: npm, node, mkdir
-    """
-    print_debug(f"bash: {command}")
+# # TODO: handle stdout, stderr. Does this work automatically?
+# def execute_bash_command(command: str) -> str:
+#     """
+#     Executes a bash command.
+#     Allowed commands: npm, node, mkdir
+#     """
+#     print_debug(f"bash `{command}`")
 
-    # Clear stdout.log and stderr.log
-    with open("stdout.log", "w") as file:
-        file.write("")
-    with open("stderr.log", "w") as file:
-        file.write("")
+#     # Clear stdout.log and stderr.log
+#     with open("stdout.log", "w") as file:
+#         file.write("")
+#     with open("stderr.log", "w") as file:
+#         file.write("")
 
-    whitelist = ["npm", "node", "mkdir", "npx"]
-    command_components = command.split(" ")
-    start_command = command_components[0]
-    if start_command not in whitelist:
-        return f"Error: Command {start_command} not allowed."
-    if command == "npm run dev":
-        return "Error: you can't run npm run dev--VSCode is already running it."
-    result = subprocess.run(command_components, capture_output=True)
-    return result.stdout.decode("utf-8")
+#     whitelist = ["npm", "node", "mkdir", "npx"]
+#     command_components = command.split(" ")
+#     start_command = command_components[0]
+#     if start_command not in whitelist:
+#         return f"Error: Command {start_command} not allowed."
+#     if command == "npm run dev":
+#         return "Error: you can't run npm run dev--VSCode is already running it."
+#     result = subprocess.run(command_components, capture_output=True)
+#     return result.stdout.decode("utf-8")
 
 
 def execute_bash_command(command: str) -> None:
@@ -147,7 +147,9 @@ def edit_file(path: str, old_snippet: str, new_snippet: str) -> str:
     Use this to replace a snippet of code in the file with a new snippet of code.
     i.e. edit_file("index.js", "console.log('hello')", "console.log('goodbye')")
     """
-    print_debug(f"edit ({path}):")
+    print_debug(
+        f"edit {path} [{old_snippet[:10]}[{len(old_snippet)}] -> {new_snippet}[:10][{len(new_snippet)}]"
+    )
 
     # Clear stdout.log and stderr.log
     with open("stdout.log", "w") as file:
